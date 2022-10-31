@@ -21,7 +21,7 @@ def home():
     data_list = cursor.fetchall()
     print(type(data_list))
     #print(data_list)
-    #print(data_list[0]["기업명칭"])
+    print(data_list[0]["기업명칭"])
     #print(data_list[1]["기업명칭"])
     #print(data_list[2]["기업명칭"])
     data_list = data_list
