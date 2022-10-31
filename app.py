@@ -31,12 +31,12 @@ def home():
      #print(i)
      #print(type(i))
      print(i["기업명칭"])
-
+    cursor.close()
     return render_template('Board/index.html', data_list=data_list)
 
 @app.route('/login_form_get')
 def login_form_get():
-    return render_template('login/login.html')
+    return render_template('Board/login.html')
 
 @app.route('/login_proc', methods=['POST'])
 def login_proc():
@@ -62,7 +62,8 @@ def login_proc():
                  return ('password is def')
             else:
                 return ('id not found')
-
+                
+    cursor.close()
     return render_template('login/session_view.html')
 
 app.secret_key = 'test_secret_key'
