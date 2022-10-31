@@ -66,6 +66,10 @@ def login_proc():
     return render_template('login/session_view.html')
 
 app.secret_key = 'test_secret_key'
+
+@app.route('/condition') #상세검색기능
+def condition():
+    return render_template('Board/Condition.html')
     
 if __name__ == '__main__':
     #app.run('127.0.0.1', 5000, debug=True)
