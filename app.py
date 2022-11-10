@@ -41,7 +41,7 @@ def condition():
     return render_template('Board/Condition.html', data_list=data_list)
 
 
-@app.route('/company/<int:data_id>')  # 기업상세페이지
+@app.route('/company/<int:data_id>')  ############ 기업상세페이지
 def company(data_id):
     sql = "SELECT * from company_info where data_id = %s"
     cursor.execute(sql, (data_id, ))
@@ -49,30 +49,63 @@ def company(data_id):
     data_list = data_list
     return render_template('Board/company.html', data_list=data_list)
 
+
+@app.route('/jobs')  ################# 채용정보페이지
+def jobs():
+    return render_template('Board/jobs.html')
+
+
+@app.route('/faq')  ############## 질문과 답변
+def faq():
+    sql = "SELECT * from faq"
+    cursor.execute(sql)
+    faq_list = cursor.fetchall()
+    faq_len = len(faq_list)
+    print(faq_len)
+
+    return render_template('Board/faq.html', faq_list=faq_list, faq_len=faq_len)
+
+@app.route('/qna') ########### 질문게시판
+def qna():
+    sql = "SELECT * from qna"
+    cursor.execute(sql)
+    qna_list = cursor.fetchall()
+    qna_len = len(qna_list)
+    print(qna_len)
+    return render_template('Board/qna.html', qna_len=qna_len, qna_list=qna_list)
+
+@app.route('/question') ######### 질문으로 넘기기
+def qnastion():
+    if session['logFlag'] == True:
+        print("세션확인",session['logFlag'])
+        return render_template('Board/question.html')
+    else:
+        return redirect('/qna')
+        
+@app.route('/question_proc', methods=['POST']) ########## 질문페이지
+def qustion_proc():
+    if request.method == 'POST':
+        print(session['ID'])
+        ID = request.form['ID']
+        subject = request.form['subject']
+        content = request.form['content']
+    sql = "insert into qna(ID,subject,content) values(%s,%s,%s)"
+    cursor.execute(sql, (ID,subject,content,))
+    con.commit()
+    qna_list = cursor.fetchall()
+    qna_len = len(qna_list)
+    print(qna_len)
+
+
+    return redirect('/qna')
+
 ##################### Index ###############
 
 ##################### 로그인관련 ###############
 
-
 @app.route('/login_form_get')
 def login_form_get():
     return render_template('Board/login.html')
-
-
-@app.route('/chart')
-def chart():
-    return render_template('Board/chart.html')
-
-
-@app.route('/bar')
-def bar():
-    return render_template('Board/bar.html')
-
-
-@app.route('/join')
-def join():
-    return render_template('Borad/join.html')
-
 
 @app.route('/login_proc', methods=['POST'])
 def login_proc():
@@ -104,7 +137,6 @@ def login_proc():
     cursor.close()
     return render_template('Board/index.html')
 
-
 app.secret_key = 'test_secret_key'
 
 
@@ -112,10 +144,13 @@ app.secret_key = 'test_secret_key'
 def logout_proc():
     session.clear()  # 세션날림
     return redirect('/')
+    
 ##################### END 로그인관련 ###############
 
 
 ##################### 회원가입관련 ###############
+
+
 @app.route('/join_form_get')
 def join_form_get():
     return render_template('Board/join.html')
@@ -186,54 +221,19 @@ def persnal_info_change():
 
 
 
-@app.route('/jobs')  # 채용정보기능
-def jobs():
-    return render_template('Board/jobs.html')
+
+############ 미완성 및 미적용 루트 ########
+
+ @app.route('/chart')
+def chart():
+    return render_template('Board/chart.html')
 
 
-@app.route('/faq')  # 질문과 답변
-def faq():
-    sql = "SELECT * from faq"
-    cursor.execute(sql)
-    faq_list = cursor.fetchall()
-    faq_len = len(faq_list)
-    print(faq_len)
+@app.route('/bar')
+def bar():
+    return render_template('Board/bar.html')
 
-    return render_template('Board/faq.html', faq_list=faq_list, faq_len=faq_len)
-
-@app.route('/qna') # 질문게시판
-def qna():
-    sql = "SELECT * from qna"
-    cursor.execute(sql)
-    qna_list = cursor.fetchall()
-    qna_len = len(qna_list)
-    print(qna_len)
-    return render_template('Board/qna.html', qna_len=qna_len, qna_list=qna_list)
-
-@app.route('/question') # 질문으로 넘기기
-def qnastion():
-    if session['logFlag'] == True:
-        print("세션확인",session['logFlag'])
-        return render_template('Board/question.html')
-    else:
-        return redirect('/qna')
-        
-@app.route('/question_proc', methods=['POST']) # 질문페이지
-def qustion_proc():
-    if request.method == 'POST':
-        print(session['ID'])
-        ID = request.form['ID']
-        subject = request.form['subject']
-        content = request.form['content']
-    sql = "insert into qna(ID,subject,content) values(%s,%s,%s)"
-    cursor.execute(sql, (ID,subject,content,))
-    con.commit()
-    qna_list = cursor.fetchall()
-    qna_len = len(qna_list)
-    print(qna_len)
-
-
-    return redirect('/qna')
+#####################################
 
 
 SECRET_KEY = "dev"
