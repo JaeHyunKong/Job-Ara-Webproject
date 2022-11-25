@@ -5,9 +5,64 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>상세조건 검색</title>
+    <a href="javascript:void(0);" onclick="interestList();">초기화</a>
 </head>
 
+
+
+
+
+<script>
+    function interestList(){
+        alert('들어왓다')
+
+    }
+    
+    function interestSave(obj,data_id,user_id){
+        var userId=user_id
+        if(userId=='null'){
+            $(obj).prop("checked",false);
+            if(confirm("로그인이 필요한 서비스입니다.\n로그인 하시겠습니까?")){
+                location.href="/login_form_get";
+            }
+        } else {
+            alert('로그인!')
+            var cmpIds = new Array();
+            
+            // $("#interestCheck .item").each(function(idx, item){
+            //     cmpIds.push($(item).data("id"));
+            //     $(item).find(":checkbox[id^=interestCheck]").prop("checked", true);
+                const dataID=data_id
+                const param={'data_id':dataID};
+                alert(data_id)
+                $.ajax({
+                    type:'GET',
+                    url:'/interest_insert',
+                    dataType:'json',
+                    data:param,
+                    success: function (data) { 
+                        console.log(data); 
+                        if (data['result']!==1){
+                            $(obj).prop("checked",true);      
+                        }
+                        else{
+                            $(obj).prop("checked",false); 
+                        }     
+                    },
+                    error: function (request, status, error) {
+                        console.log(request, status,error);
+                    }
+                });    
+            // });
+        }
+
+        }
+
+
+</script>
+
 <body>
+
     {% include 'Board/header.html' %}
     <div class="main-div">
         <section class="main-section">
@@ -15,9 +70,9 @@
                 <div class="inner">
                     <div class="public-list">
                         <ol class="public-ol">
-                            <li class="public-li">index ></li>
-                            <li class="public-li">> 조건으로 찾기 ></li>
-                            <li class="public-li">> 상세조건 검색</li>
+                            <li class="public-li">index</li>
+                            <li class="public-li">조건으로 찾기</li>
+                            <li class="public-li">상세조건 검색</li>
                         </ol>
                     </div>
                     <div class="public-title">
@@ -280,13 +335,16 @@
             </form>
             <div class="condition">
                 <ul>
+                    
                     {% for x in range(10) %}
                     <li>
                         <div>
                             <div>
                                 <a>
-                                    {# if문으로 관심기업아니면 ☆ 관심기업이면 ★ #}
-                                    <div>☆ 관심기업 등록하기</div>
+                                    {# onclick은 로그인이 안되어있을때  ★ #}
+
+
+
                                     {# <div>★ 관심기업 해제하기</div> #}
                                 </a>
                                 <a>
@@ -309,10 +367,13 @@
                         </div>
                     </li>
                     {% endfor %}
+                    
                 </ul>
             </div>
         </section>
     </div>
+    {% include '/Board/footer.html' %}
+
 </body>
 
 </html>
